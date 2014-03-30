@@ -5,3 +5,4 @@
 *.ear
 /nbproject/private/
 /build/
+/index/
