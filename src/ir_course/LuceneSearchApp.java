@@ -7,6 +7,12 @@
  */
 package ir_course;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -14,22 +20,16 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
+import org.apache.lucene.search.similarities.DefaultSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 public class LuceneSearchApp {
 
     public static final String INDEXFILE = "index";
     public static final String TITLE = "title";
     private static final String ABSTRACT = "abstract";
-    private static final String RELEVANT = "relevant";
 
     public LuceneSearchApp() {
 
@@ -43,48 +43,58 @@ public class LuceneSearchApp {
             parser.parse(args[0]);
             List<DocumentInCollection> docs = parser.getDocuments();
 
-            engine.index(docs);
+            engine.index(docs, true);
 
             List<String> inTitle;
-            List<String> notInTitle;
             List<String> inAbstract;
-            List<String> notInAbstract;
             List<String> results;
 
-            // 1) search documents with words "kim" and "korea" in the title
-            inTitle = new LinkedList<String>();
-            inTitle.add("computer");
-            inTitle.add("vision");
-            results = engine.search(inTitle, null, null, null);
+            /* Queries found in corpus:
+             automatic face recognition
+             computer vision analysis
+             image pattern recognition
+             scene analysis
+             */
+            inAbstract = new ArrayList<>();
+            inAbstract.add("automatic");
+            inAbstract.add("face");
+            inAbstract.add("recognition");
+            results = engine.search(null, null, inAbstract, null);
             engine.printResults(results);
 
-            // 2) search documents with word "kim" in the title and no word "korea" in the description
-            inTitle = new LinkedList<String>();
-            notInAbstract = new LinkedList<String>();
-            inTitle.add("kim");
-            notInAbstract.add("korea");
-            results = engine.search(inTitle, null, null, notInAbstract);
+            inAbstract = new ArrayList<>();
+            inAbstract.add("computer");
+            inAbstract.add("vision");
+            inAbstract.add("analysis");
+            results = engine.search(null, null, inAbstract, null);
             engine.printResults(results);
 
-            // 3) search documents with word "us" in the title, no word "dawn" in the title and word "" and "" in the description
-            inTitle = new LinkedList<String>();
-            inTitle.add("us");
-            notInTitle = new LinkedList<String>();
-            notInTitle.add("dawn");
-            inAbstract = new LinkedList<String>();
-            inAbstract.add("american");
-            inAbstract.add("confession");
-            results = engine.search(inTitle, notInTitle, inAbstract, null);
+            inAbstract = new ArrayList<>();
+            inAbstract.add("image");
+            inAbstract.add("pattern");
+            inAbstract.add("recognition");
+            results = engine.search(null, null, inAbstract, null);
             engine.printResults(results);
-        } else
+
+            inAbstract = new ArrayList<>();
+            inAbstract.add("scene");
+            inAbstract.add("analysis");
+            results = engine.search(null, null, inAbstract, null);
+            engine.printResults(results);
+
+        } else 
             System.out.println("ERROR: the path of the corpus-file has to be passed as a command line argument.");
     }
 
-    public void index(List<DocumentInCollection> docs) {
+    public void index(List<DocumentInCollection> docs, boolean isTfIdf) {
         try {
             Directory dir = FSDirectory.open(new File(INDEXFILE));
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
             IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_42, analyzer);
+            if (isTfIdf) {
+                // DefaultSimilarity is subclass of TFIDFSimilarity
+                iwc.setSimilarity(new DefaultSimilarity());
+            }
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
             IndexWriter w = new IndexWriter(dir, iwc);
 
@@ -92,8 +102,6 @@ public class LuceneSearchApp {
                 Document doc = new Document();
                 doc.add(new Field(TITLE, documentInCollection.getTitle(), TextField.TYPE_STORED));
                 doc.add(new Field(ABSTRACT, documentInCollection.getAbstractText(), TextField.TYPE_STORED));
-                String relevance = Boolean.toString(documentInCollection.isRelevant());
-                doc.add(new Field(RELEVANT, relevance, TextField.TYPE_STORED));
                 w.addDocument(doc);
             }
             w.close();
@@ -129,6 +137,9 @@ public class LuceneSearchApp {
         List<String> results = new LinkedList<String>();
         TopScoreDocCollector collector = TopScoreDocCollector.create(1000, true);
         try {
+            // DefaultSimilarity is subclass of TFIDFSimilarity
+            DefaultSimilarity similarity = new DefaultSimilarity();
+            searcher.setSimilarity(similarity);
             searcher.search(query, collector);
             ScoreDoc[] hits = collector.topDocs().scoreDocs;
             for (ScoreDoc sdoc : hits) {
@@ -164,7 +175,7 @@ public class LuceneSearchApp {
             System.out.print("not in title: " + notInTitle);
             if (inAbstract != null || notInAbstract != null)
                 System.out.print("; ");
-        }
+            }
         if (inAbstract != null) {
             System.out.print("in abstract: " + inAbstract);
             if (notInAbstract != null)
@@ -183,5 +194,5 @@ public class LuceneSearchApp {
                 System.out.println(" " + (i + 1) + ". " + results.get(i));
         } else
             System.out.println(" no results");
-    }
-}
+     }
+ }
