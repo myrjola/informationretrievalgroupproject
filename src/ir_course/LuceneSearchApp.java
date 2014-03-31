@@ -7,23 +7,32 @@
  */
 package ir_course;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.*;
-import org.apache.lucene.search.*;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.similarities.DefaultSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class LuceneSearchApp {
 
@@ -45,7 +54,9 @@ public class LuceneSearchApp {
 
             engine.index(docs, true);
 
-            List<String> inTitle;
+            // TODO: should we search also from title?
+            // List<String> inTitle;
+
             List<String> inAbstract;
             List<String> results;
 
@@ -134,8 +145,8 @@ public class LuceneSearchApp {
     }
 
     private List<String> collectResults(IndexSearcher searcher, BooleanQuery query) {
-        List<String> results = new LinkedList<String>();
-        TopScoreDocCollector collector = TopScoreDocCollector.create(1000, true);
+        List<String> results = new LinkedList<>();
+        TopScoreDocCollector collector = TopScoreDocCollector.create(1000, false);
         try {
             // DefaultSimilarity is subclass of TFIDFSimilarity
             DefaultSimilarity similarity = new DefaultSimilarity();
@@ -145,7 +156,7 @@ public class LuceneSearchApp {
             for (ScoreDoc sdoc : hits) {
                 int docId = sdoc.doc;
                 Document d = searcher.doc(docId);
-                results.add(String.format("%s; Score: %f", d.get(TITLE), sdoc.score));
+                results.add(String.format("%s; Score: %s", d.get(TITLE), Double.toString(sdoc.score)));
             }
 
         } catch (IOException e) {
@@ -189,7 +200,6 @@ public class LuceneSearchApp {
 
     public void printResults(List<String> results) {
         if (results.size() > 0) {
-            Collections.sort(results);
             for (int i = 0; i < results.size(); i++)
                 System.out.println(" " + (i + 1) + ". " + results.get(i));
         } else
