@@ -2,6 +2,54 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/libs"/>
+	<classpathentry kind="lib" path="libs">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="informationretrievalgroupproject/libs"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/ant-1.8.2.jar"/>
+	<classpathentry kind="lib" path="libs/commons-codec-1.7.jar"/>
+	<classpathentry kind="lib" path="libs/commons-compress-1.4.1.jar"/>
+	<classpathentry kind="lib" path="libs/guava-16.0.1.jar"/>
+	<classpathentry kind="lib" path="libs/icu4j-49.1.jar"/>
+	<classpathentry kind="lib" path="libs/jakarta-regexp-1.4.jar"/>
+	<classpathentry kind="lib" path="libs/joda-time-2.3.jar"/>
+	<classpathentry kind="lib" path="libs/junit-4.10.jar"/>
+	<classpathentry kind="lib" path="libs/junit4-ant-2.0.8.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-analyzers-common-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-analyzers-icu-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-analyzers-kuromoji-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-analyzers-morfologik-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-analyzers-phonetic-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-analyzers-smartcn-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-analyzers-stempel-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-analyzers-uima-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-benchmark-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-classification-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-codecs-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-core-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-demo-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-facet-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-grouping-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-highlighter-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-join-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-memory-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-misc-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-queries-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-queryparser-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-sandbox-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-spatial-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-suggest-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/lucene-test-framework-4.2.0.jar"/>
+	<classpathentry kind="lib" path="libs/morfologik-fsa-1.5.5.jar"/>
+	<classpathentry kind="lib" path="libs/morfologik-polish-1.5.5.jar"/>
+	<classpathentry kind="lib" path="libs/morfologik-stemming-1.5.5.jar"/>
+	<classpathentry kind="lib" path="libs/nekohtml-1.9.17.jar"/>
+	<classpathentry kind="lib" path="libs/randomizedtesting-runner-2.0.8.jar"/>
+	<classpathentry kind="lib" path="libs/spatial4j-0.3.jar"/>
+	<classpathentry kind="lib" path="libs/Tagger-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs/uimaj-core-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs/WhitespaceTokenizer-2.3.1.jar"/>
+	<classpathentry kind="lib" path="libs/xercesImpl-2.9.1.jar"/>
 	<classpathentry kind="output" path="out/production/informationretrievalgroupproject"/>
 </classpath>
