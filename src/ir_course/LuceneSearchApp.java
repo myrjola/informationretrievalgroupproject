@@ -26,6 +26,7 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.similarities.DefaultSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 
 import java.io.File;
@@ -99,7 +100,7 @@ public class LuceneSearchApp {
 
     public void index(List<DocumentInCollection> docs, boolean isTfIdf) {
         try {
-            Directory dir = FSDirectory.open(new File(INDEXFILE));
+            Directory dir = new RAMDirectory();
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
             IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_42, analyzer);
             if (isTfIdf) {

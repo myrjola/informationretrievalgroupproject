@@ -1,10 +1,52 @@
 <component name="libraryTable">
   <library name="libs">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/libs" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-queries-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-test-framework-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/Tagger-2.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-misc-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/junit4-ant-2.0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-analyzers-uima-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/morfologik-polish-1.5.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-demo-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/morfologik-fsa-1.5.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/spatial4j-0.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jakarta-regexp-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/morfologik-stemming-1.5.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-analyzers-kuromoji-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-sandbox-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-highlighter-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-memory-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-core-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-analyzers-stempel-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-queryparser-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-suggest-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-analyzers-phonetic-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-facet-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/commons-compress-1.4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-join-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/uimaj-core-2.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/nekohtml-1.9.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-codecs-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/xercesImpl-2.9.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/icu4j-49.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/ant-1.8.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-analyzers-icu-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-classification-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-spatial-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-analyzers-smartcn-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-analyzers-morfologik-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/WhitespaceTokenizer-2.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/guava-16.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/commons-codec-1.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/joda-time-2.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/randomizedtesting-runner-2.0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-grouping-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-analyzers-common-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/lucene-benchmark-4.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/junit-4.10.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
-    <jarDirectory url="file://$PROJECT_DIR$/libs" recursive="false" />
   </library>
 </component>
