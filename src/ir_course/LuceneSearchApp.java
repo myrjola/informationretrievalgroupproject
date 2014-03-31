@@ -145,7 +145,7 @@ public class LuceneSearchApp {
             for (ScoreDoc sdoc : hits) {
                 int docId = sdoc.doc;
                 Document d = searcher.doc(docId);
-                results.add(d.get(TITLE));
+                results.add(String.format("%s; Score: %f", d.get(TITLE), sdoc.score));
             }
 
         } catch (IOException e) {
