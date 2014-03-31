@@ -1,1 +1,9 @@
+*.class
+
+# Package Files #
+*.war
+*.ear
+/nbproject/private/
+/build/
+/index/
 /bin
