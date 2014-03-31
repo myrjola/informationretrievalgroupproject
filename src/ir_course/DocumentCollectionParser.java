@@ -89,9 +89,7 @@ public class DocumentCollectionParser extends DefaultHandler {
 		if (qName.equals("item")) {
 			this.item = false;
 			if (this.currentDoc.getTitle() != null)
-                                if (this.currentDoc.getSearchTaskNumber() == 4) {
-                                    docs.add(this.currentDoc);
-                                }
+				docs.add(this.currentDoc);
 		}
 		else if (qName.equals("title")) {
 			this.currentDoc.setTitle(this.currentText);
