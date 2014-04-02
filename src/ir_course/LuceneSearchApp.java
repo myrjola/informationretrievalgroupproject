@@ -43,7 +43,13 @@ public class LuceneSearchApp {
             parser.parse(args[0]);
             List<DocumentInCollection> docs = parser.getDocuments();
 
-            engine.index(docs, true);
+            Stemmer stemmer = Stemmer.STANDARD;
+            // if analyzer defined
+            if (args.length > 1) {
+                stemmer = Stemmer.valueOf(args[1]);
+            }
+
+            engine.index(docs, true, stemmer);
 
             List<String> inTitle;
             List<String> inAbstract;
@@ -55,6 +61,11 @@ public class LuceneSearchApp {
              image pattern recognition
              scene analysis
              */
+            inAbstract = new ArrayList<>();
+            inAbstract.add("automatically");
+            results = engine.search(null, null, inAbstract, null);
+            engine.printResults(results);
+
             inAbstract = new ArrayList<>();
             inAbstract.add("automatic");
             inAbstract.add("face");
@@ -86,10 +97,13 @@ public class LuceneSearchApp {
             System.out.println("ERROR: the path of the corpus-file has to be passed as a command line argument.");
     }
 
-    public void index(List<DocumentInCollection> docs, boolean isTfIdf) {
+    public void index(List<DocumentInCollection> docs, boolean isTfIdf, Stemmer stemmer) {
         try {
             Directory dir = FSDirectory.open(new File(INDEXFILE));
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
+            if (stemmer.equals(Stemmer.PORTER)) {
+                analyzer = new PorterAnalyzer();
+            }
             IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_42, analyzer);
             if (isTfIdf) {
                 // DefaultSimilarity is subclass of TFIDFSimilarity
