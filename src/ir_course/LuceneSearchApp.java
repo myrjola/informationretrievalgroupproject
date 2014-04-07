@@ -7,26 +7,31 @@
  */
 package ir_course;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
+import com.google.common.base.Joiner;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.*;
-import org.apache.lucene.search.*;
-import org.apache.lucene.search.FieldComparator.RelevanceComparator;
-import org.apache.lucene.search.similarities.BM25Similarity;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.similarities.DefaultSimilarity;
+import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.tartarus.snowball.ext.PorterStemmer;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,13 +40,17 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.Similarity;
+import java.util.Collections;
+import java.util.StringTokenizer;
 
 public class LuceneSearchApp {
 
     public static final String INDEXFILE = "index";
     public static final String TITLE = "title";
+    public static final String RELEVANT = "relevant";
+    public static final PorterStemmer PORTER_STEMMER = new PorterStemmer();
     private static final String ABSTRACT = "abstract";
-    public static final String RELEVANT = "relevant";  
+    private static Stemmer stemmer;
 
     private static int totalNumRelevantRecords = 0;
     
@@ -60,13 +69,13 @@ public class LuceneSearchApp {
             List<String> argList = Arrays.asList(args);
 
 
-            Stemmer stemmer = Stemmer.STANDARD;
+            stemmer = Stemmer.STANDARD;
             // if analyzer defined
             if (argList.contains("PORTER")) {
                 stemmer = Stemmer.PORTER;
             }
 
-            engine.index(docs, true, stemmer);
+            engine.index(docs, true);
 
             List<String> inTitle;
             List<String> inAbstract;
@@ -125,12 +134,13 @@ public class LuceneSearchApp {
             System.out.println("ERROR: the path of the corpus-file has to be passed as a command line argument.");
     }
 
-    public void index(List<DocumentInCollection> docs, boolean isTfIdf, Stemmer stemmer) {
+    public void index(List<DocumentInCollection> docs, boolean isTfIdf) {
         try {
             Directory dir = FSDirectory.open(new File(INDEXFILE));
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
             if (stemmer.equals(Stemmer.PORTER)) {
-                analyzer = new PorterAnalyzer();
+                // Prevent wrong analyzation of stemmed words.
+                analyzer = new StopAnalyzer(Version.LUCENE_42);
             }
             IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_42, analyzer);
             if (isTfIdf) {
@@ -142,13 +152,25 @@ public class LuceneSearchApp {
 
             for (DocumentInCollection documentInCollection : docs) {
                 Document doc = new Document();
-                doc.add(new Field(TITLE, documentInCollection.getTitle(), TextField.TYPE_STORED));
-                doc.add(new Field(ABSTRACT, documentInCollection.getAbstractText(), TextField.TYPE_STORED));
                 if(documentInCollection.isRelevant() && documentInCollection.getSearchTaskNumber() == 4) {
                 	doc.add(new Field(RELEVANT, "true", TextField.TYPE_STORED));
                 } else {
                 	doc.add(new Field(RELEVANT, "false", TextField.TYPE_STORED));
                 }
+                doc.add(new Field(TITLE, documentInCollection.getTitle(), TextField.TYPE_STORED));
+
+                String abstractString = documentInCollection.getAbstractText();
+                if (stemmer.equals(Stemmer.PORTER)) {
+                    StringTokenizer tokenizer = new StringTokenizer(abstractString);
+                    List<String> stemmedList = new LinkedList<>();
+                    while (tokenizer.hasMoreTokens()) {
+                        stemmedList.add(porterStem(tokenizer.nextToken().toLowerCase()));
+                    }
+                    Joiner joiner = Joiner.on(" ").skipNulls();
+                    abstractString = joiner.join(stemmedList);
+                }
+
+                doc.add(new Field(ABSTRACT, abstractString, TextField.TYPE_STORED));
                 w.addDocument(doc);
             }
             w.close();
@@ -216,11 +238,20 @@ public class LuceneSearchApp {
 
     private void addTermQueries(List<String> termList, BooleanQuery q, String field, BooleanClause.Occur occur) {
         if (termList == null) return;
-        for (String title : termList) {
-            Term t = new Term(field, title);
+        for (String termString : termList) {
+            if (stemmer.equals(Stemmer.PORTER)) {
+                termString = porterStem(termString);
+            }
+            Term t = new Term(field, termString);
             TermQuery tq = new TermQuery(t);
             q.add(tq, occur);
         }
+    }
+
+    private String porterStem(String string) {
+        PORTER_STEMMER.setCurrent(string);
+        PORTER_STEMMER.stem();
+        return PORTER_STEMMER.getCurrent();
     }
 
     public void printQuery(List<String> inTitle, List<String> notInTitle, List<String> inAbstract, List<String> notInAbstract) {
@@ -245,6 +276,7 @@ public class LuceneSearchApp {
         }
         System.out.println("):");
     }
+
 
     public void printResults(List<String> results) {
         if (results.size() > 0) {
