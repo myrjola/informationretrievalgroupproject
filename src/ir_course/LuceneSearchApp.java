@@ -91,34 +91,34 @@ public class LuceneSearchApp {
 
             inAbstract = new ArrayList<>();
             inAbstract.add("automatically");
-            results = engine.search(null, null, inAbstract, null, similarity);
+            results = engine.search(null, inAbstract, similarity);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("automatic");
             inAbstract.add("face");
             inAbstract.add("recognition");
-            results = engine.search(null, null, inAbstract, null, similarity);
+            results = engine.search(null, inAbstract, similarity);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("computer");
             inAbstract.add("vision");
             inAbstract.add("analysis");
-            results = engine.search(null, null, inAbstract, null, similarity);
+            results = engine.search(null, inAbstract, similarity);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("image");
             inAbstract.add("pattern");
             inAbstract.add("recognition");
-            results = engine.search(null, null, inAbstract, null, similarity);
+            results = engine.search(null, inAbstract, similarity);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("scene");
             inAbstract.add("analysis");
-            results = engine.search(null, null, inAbstract, null, similarity);
+            results = engine.search(null, inAbstract, similarity);
             engine.printResults(results);
 
         } else 
@@ -159,9 +159,9 @@ public class LuceneSearchApp {
 
     }
 
-    public List<String> search(List<String> inTitle, List<String> notInTitle, List<String> inAbstract, List<String> notInAbstract, Similarity similarity) {
+    public List<String> search(List<String> inTitle, List<String> inAbstract, Similarity similarity) {
 
-        printQuery(inTitle, notInTitle, inAbstract, notInAbstract);
+        printQuery(inTitle, null, inAbstract, null);
 
         IndexReader reader;
         try {
@@ -173,9 +173,7 @@ public class LuceneSearchApp {
         IndexSearcher searcher = new IndexSearcher(reader);
         BooleanQuery query = new BooleanQuery();
         addTermQueries(inTitle, query, TITLE, BooleanClause.Occur.MUST);
-        addTermQueries(notInTitle, query, TITLE, BooleanClause.Occur.MUST_NOT);
         addTermQueries(inAbstract, query, ABSTRACT, BooleanClause.Occur.SHOULD);
-        addTermQueries(notInAbstract, query, ABSTRACT, BooleanClause.Occur.MUST_NOT);
 
         return collectResults(searcher, query, similarity);
     }
