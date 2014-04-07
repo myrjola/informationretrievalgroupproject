@@ -1,5 +1,9 @@
 *.class
 
+# intellij idea files
+informationretrievalgroupproject.eml
+informationretrievalgroupproject.userlibraries
+
 # Package Files #
 *.war
 *.ear
