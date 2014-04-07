@@ -205,7 +205,7 @@ public class LuceneSearchApp {
              */ 
             Plotter plotter = new Plotter("/tmp/");
             String texplot = plotter.PlotListAsString(plotlist, "testplot", totalNumRelevantRecords);
-            System.out.print(texplot);
+            System.out.println(texplot);
 
         } catch (IOException e) {
             System.err.println("Error collecting results!");
@@ -248,7 +248,6 @@ public class LuceneSearchApp {
 
     public void printResults(List<String> results) {
         if (results.size() > 0) {
-            Collections.sort(results);
             for (int i = 0; i < results.size(); i++)
                 System.out.println(" " + (i + 1) + ". " + results.get(i));
         } else
