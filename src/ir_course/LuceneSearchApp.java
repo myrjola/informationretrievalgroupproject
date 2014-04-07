@@ -30,8 +30,10 @@ import org.apache.lucene.util.Version;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.Similarity;
 
 public class LuceneSearchApp {
@@ -55,10 +57,13 @@ public class LuceneSearchApp {
             parser.parse(args[0]);
             List<DocumentInCollection> docs = parser.getDocuments();
 
+            List<String> argList = Arrays.asList(args);
+
+
             Stemmer stemmer = Stemmer.STANDARD;
             // if analyzer defined
-            if (args.length > 1) {
-                stemmer = Stemmer.valueOf(args[1]);
+            if (argList.contains("PORTER")) {
+                stemmer = Stemmer.PORTER;
             }
 
             engine.index(docs, true, stemmer);
@@ -77,36 +82,43 @@ public class LuceneSearchApp {
             
             totalNumRelevantRecords = 140;
             
+            Similarity similarity;
+            if (argList.contains("bm25")) {
+                similarity = new BM25Similarity();
+            } else {
+                similarity = new DefaultSimilarity();
+            }
+
             inAbstract = new ArrayList<>();
             inAbstract.add("automatically");
-            results = engine.search(null, null, inAbstract, null, null);
+            results = engine.search(null, null, inAbstract, null, similarity);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("automatic");
             inAbstract.add("face");
             inAbstract.add("recognition");
-            results = engine.search(null, null, inAbstract, null, null);
+            results = engine.search(null, null, inAbstract, null, similarity);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("computer");
             inAbstract.add("vision");
             inAbstract.add("analysis");
-            results = engine.search(null, null, inAbstract, null, null);
+            results = engine.search(null, null, inAbstract, null, similarity);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("image");
             inAbstract.add("pattern");
             inAbstract.add("recognition");
-            results = engine.search(null, null, inAbstract, null, null);
+            results = engine.search(null, null, inAbstract, null, similarity);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("scene");
             inAbstract.add("analysis");
-            results = engine.search(null, null, inAbstract, null, null);
+            results = engine.search(null, null, inAbstract, null, similarity);
             engine.printResults(results);
 
         } else 
