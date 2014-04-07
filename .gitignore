@@ -7,3 +7,6 @@
 /build/
 /index/
 /bin/
+.settings/
+.settings/
+out/
