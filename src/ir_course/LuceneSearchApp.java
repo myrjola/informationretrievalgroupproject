@@ -8,6 +8,7 @@
 package ir_course;
 
 import com.google.common.base.Joiner;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -22,6 +23,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
@@ -38,8 +40,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.Similarity;
+
 import java.util.Collections;
 import java.util.StringTokenizer;
 
@@ -192,11 +196,16 @@ public class LuceneSearchApp {
             System.err.println("Error opening index for searching!");
             throw new RuntimeException(e);
         }
+
         IndexSearcher searcher = new IndexSearcher(reader);
         BooleanQuery query = new BooleanQuery();
+        List<String> relevantlist = new ArrayList<String>();
+        relevantlist.add("true");
         addTermQueries(inTitle, query, TITLE, BooleanClause.Occur.MUST);
         addTermQueries(inAbstract, query, ABSTRACT, BooleanClause.Occur.SHOULD);
-
+        query.add(new MatchAllDocsQuery(), BooleanClause.Occur.SHOULD);
+                
+        
         return collectResults(searcher, query, similarity);
     }
 

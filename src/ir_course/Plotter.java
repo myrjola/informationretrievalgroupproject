@@ -80,6 +80,8 @@ public class Plotter {
     		}
     	}
     	
+//    	System.out.println("totalrelevant: " +relevantTotal);
+    	
     	Iterator<Point> pointIterator = curvepoints.iterator();
     	Point nextPoint = pointIterator.next();
     	
@@ -93,6 +95,14 @@ public class Plotter {
     			}
     		}
     	}
+    	List<Point> extraPoints = new LinkedList<Point>();
+    	if(nextPoint.y==0.0) {
+    		extraPoints.add(nextPoint);
+    	}
+    	while(pointIterator.hasNext()) {
+    		extraPoints.add(pointIterator.next());
+    	}
+    	curvepoints.removeAll(extraPoints);
     	
     	return curvepoints;
     }
