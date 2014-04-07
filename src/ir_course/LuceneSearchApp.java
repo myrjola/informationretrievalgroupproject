@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.lucene.search.similarities.Similarity;
 
 public class LuceneSearchApp {
 
@@ -75,34 +76,34 @@ public class LuceneSearchApp {
              */
             inAbstract = new ArrayList<>();
             inAbstract.add("automatically");
-            results = engine.search(null, null, inAbstract, null);
+            results = engine.search(null, null, inAbstract, null, null);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("automatic");
             inAbstract.add("face");
             inAbstract.add("recognition");
-            results = engine.search(null, null, inAbstract, null);
+            results = engine.search(null, null, inAbstract, null, null);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("computer");
             inAbstract.add("vision");
             inAbstract.add("analysis");
-            results = engine.search(null, null, inAbstract, null);
+            results = engine.search(null, null, inAbstract, null, null);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("image");
             inAbstract.add("pattern");
             inAbstract.add("recognition");
-            results = engine.search(null, null, inAbstract, null);
+            results = engine.search(null, null, inAbstract, null, null);
             engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("scene");
             inAbstract.add("analysis");
-            results = engine.search(null, null, inAbstract, null);
+            results = engine.search(null, null, inAbstract, null, null);
             engine.printResults(results);
 
         } else 
@@ -138,7 +139,7 @@ public class LuceneSearchApp {
 
     }
 
-    public List<String> search(List<String> inTitle, List<String> notInTitle, List<String> inAbstract, List<String> notInAbstract) {
+    public List<String> search(List<String> inTitle, List<String> notInTitle, List<String> inAbstract, List<String> notInAbstract, Similarity similarity) {
 
         printQuery(inTitle, notInTitle, inAbstract, notInAbstract);
 
@@ -156,15 +157,17 @@ public class LuceneSearchApp {
         addTermQueries(inAbstract, query, ABSTRACT, BooleanClause.Occur.MUST);
         addTermQueries(notInAbstract, query, ABSTRACT, BooleanClause.Occur.MUST_NOT);
 
-        return collectResults(searcher, query);
+        return collectResults(searcher, query, similarity);
     }
 
-    private List<String> collectResults(IndexSearcher searcher, BooleanQuery query) {
+    private List<String> collectResults(IndexSearcher searcher, BooleanQuery query, Similarity similarity) {
         List<String> results = new LinkedList<>();
         TopScoreDocCollector collector = TopScoreDocCollector.create(1000, false);
         try {
             // DefaultSimilarity is subclass of TFIDFSimilarity
-            DefaultSimilarity similarity = new DefaultSimilarity();
+            if (similarity == null) {
+                similarity = new DefaultSimilarity();
+            }
             searcher.setSimilarity(similarity);
             searcher.search(query, collector);
             ScoreDoc[] hits = collector.topDocs().scoreDocs;
