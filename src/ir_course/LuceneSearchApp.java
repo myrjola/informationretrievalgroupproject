@@ -212,7 +212,7 @@ public class LuceneSearchApp {
         BooleanQuery query = new BooleanQuery();
         List<String> relevantlist = new ArrayList<String>();
         relevantlist.add("true");
-        addTermQueries(inTitle, query, TITLE, BooleanClause.Occur.MUST);
+        addTermQueries(inTitle, query, TITLE, BooleanClause.Occur.SHOULD);
         addTermQueries(inAbstract, query, ABSTRACT, BooleanClause.Occur.SHOULD);
         query.add(new MatchAllDocsQuery(), BooleanClause.Occur.SHOULD);
                 
