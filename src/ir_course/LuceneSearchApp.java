@@ -167,19 +167,13 @@ public class LuceneSearchApp {
                 } else {
                 	doc.add(new Field(RELEVANT, "false", TextField.TYPE_STORED));
                 }
-                doc.add(new Field(TITLE, documentInCollection.getTitle(), TextField.TYPE_STORED));
-
+                String title = documentInCollection.getTitle();
                 String abstractString = documentInCollection.getAbstractText();
                 if (stemmer.equals(Stemmer.PORTER)) {
-                    StringTokenizer tokenizer = new StringTokenizer(abstractString);
-                    List<String> stemmedList = new LinkedList<>();
-                    while (tokenizer.hasMoreTokens()) {
-                        stemmedList.add(porterStem(tokenizer.nextToken().toLowerCase()));
-                    }
-                    Joiner joiner = Joiner.on(" ").skipNulls();
-                    abstractString = joiner.join(stemmedList);
+                    title = tokenizeAndPorterStemString(title);
+                    abstractString = tokenizeAndPorterStemString(abstractString);
                 }
-
+                doc.add(new Field(TITLE, documentInCollection.getTitle(), TextField.TYPE_STORED));
                 doc.add(new Field(ABSTRACT, abstractString, TextField.TYPE_STORED));
                 w.addDocument(doc);
             }
@@ -189,6 +183,17 @@ public class LuceneSearchApp {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private String tokenizeAndPorterStemString(String abstractString) {
+        StringTokenizer tokenizer = new StringTokenizer(abstractString);
+        List<String> stemmedList = new LinkedList<>();
+        while (tokenizer.hasMoreTokens()) {
+            stemmedList.add(porterStem(tokenizer.nextToken().toLowerCase()));
+        }
+        Joiner joiner = Joiner.on(" ").skipNulls();
+        abstractString = joiner.join(stemmedList);
+        return abstractString;
     }
 
     public List<String> search(List<String> inTitle, List<String> inAbstract, Similarity similarity) {
