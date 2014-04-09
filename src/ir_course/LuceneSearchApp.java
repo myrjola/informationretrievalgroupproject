@@ -58,7 +58,8 @@ public class LuceneSearchApp {
     private static Plotter plotter;
 
     private static int totalNumRelevantRecords = 0;
-    
+    private static Similarity similarity;
+
     public LuceneSearchApp() {
 
     }
@@ -96,8 +97,7 @@ public class LuceneSearchApp {
             
             totalNumRelevantRecords = 140;
             plotter = new Plotter("/tmp/");
-            
-            Similarity similarity;
+
             if (argList.contains("bm25")) {
                 similarity = new BM25Similarity();
             } else {
@@ -136,7 +136,7 @@ public class LuceneSearchApp {
             results = engine.search(null, inAbstract, similarity);
 //            engine.printResults(results);
 
-            System.out.println(plotter.PlotResultsAsString("combined results"));
+            System.out.println(plotter.PlotResultsAsString(String.format("combined results, stemmer: %s scorer: %s", stemmer.toString(), similarity.toString())));
         } else 
             System.out.println("ERROR: the path of the corpus-file has to be passed as a command line argument.");
     }
