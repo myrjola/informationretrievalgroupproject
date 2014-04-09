@@ -55,6 +55,7 @@ public class LuceneSearchApp {
     public static final PorterStemmer PORTER_STEMMER = new PorterStemmer();
     private static final String ABSTRACT = "abstract";
     private static Stemmer stemmer;
+    private static Plotter plotter;
 
     private static int totalNumRelevantRecords = 0;
     
@@ -94,6 +95,7 @@ public class LuceneSearchApp {
              */
             
             totalNumRelevantRecords = 140;
+            plotter = new Plotter("/tmp/");
             
             Similarity similarity;
             if (argList.contains("bm25")) {
@@ -105,35 +107,36 @@ public class LuceneSearchApp {
             inAbstract = new ArrayList<>();
             inAbstract.add("automatically");
             results = engine.search(null, inAbstract, similarity);
-            engine.printResults(results);
+//            engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("automatic");
             inAbstract.add("face");
             inAbstract.add("recognition");
             results = engine.search(null, inAbstract, similarity);
-            engine.printResults(results);
+//            engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("computer");
             inAbstract.add("vision");
             inAbstract.add("analysis");
             results = engine.search(null, inAbstract, similarity);
-            engine.printResults(results);
+//            engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("image");
             inAbstract.add("pattern");
             inAbstract.add("recognition");
             results = engine.search(null, inAbstract, similarity);
-            engine.printResults(results);
+//            engine.printResults(results);
 
             inAbstract = new ArrayList<>();
             inAbstract.add("scene");
             inAbstract.add("analysis");
             results = engine.search(null, inAbstract, similarity);
-            engine.printResults(results);
+//            engine.printResults(results);
 
+            System.out.println(plotter.PlotResultsAsString("combined results"));
         } else 
             System.out.println("ERROR: the path of the corpus-file has to be passed as a command line argument.");
     }
@@ -212,7 +215,7 @@ public class LuceneSearchApp {
 
     private List<String> collectResults(IndexSearcher searcher, BooleanQuery query, Similarity similarity) {
         List<String> results = new LinkedList<>();
-        TopScoreDocCollector collector = TopScoreDocCollector.create(1000, false);
+        TopScoreDocCollector collector = TopScoreDocCollector.create(3000, false);
         try {
             // DefaultSimilarity is subclass of TFIDFSimilarity
             if (similarity == null) {
@@ -234,9 +237,8 @@ public class LuceneSearchApp {
              * Plotter also needs to know what the total recall is for each query, as the results
              * don't include those relevant documents that the query missed.
              */ 
-            Plotter plotter = new Plotter("/tmp/");
-            String texplot = plotter.PlotListAsString(plotlist, "testplot", totalNumRelevantRecords);
-            System.out.println(texplot);
+
+            plotter.AddListToResults(plotlist, totalNumRelevantRecords);
 
         } catch (IOException e) {
             System.err.println("Error collecting results!");

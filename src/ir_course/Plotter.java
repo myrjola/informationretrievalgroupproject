@@ -14,6 +14,9 @@ import org.apache.lucene.document.*;
 
 public class Plotter {
 	private String basedir ="";
+	
+	private float[] points;
+	private int count;
 
 	private static class Point {
 		public double x,y;
@@ -28,6 +31,8 @@ public class Plotter {
 
     public Plotter(String basedir) {
     	this.basedir = basedir;
+    	this.count = 0;
+    	this.points = new float[11];
     }
 
     
@@ -61,6 +66,35 @@ public class Plotter {
     	plotTex += "};\n\\end{axis} \n\\end{tikzpicture}";
     	
     	return plotTex;
+    }
+ 
+    public String PlotResultsAsString(String plotTitle) {
+    	String plotTex = "\\begin{tikzpicture} \n\\begin{axis}[\n\ttitle={";
+    	plotTex += plotTitle;
+    	plotTex += "},\n\txlabel={Recall}, \n\tylabel={Precision},\n\txmin=0, \n\txmax=1,\n\tymin=0, \n\tymax=1,"
+    			+ "\n\txtick={0,0.2,0.4,0.6,0.8,1.0},"
+    			+ "\n\tytick={0,0.2,0.4,0.6,0.8,1.0},"
+    			+ "\n\tlegend pos=outer north east,]";
+    	plotTex += "\n\\addplot[color=blue,mark=*,]"
+    			+"\n\tcoordinates {";
+    	for(int i=0 ; i<11 ; i++) {
+    		plotTex += "("+((float)i/10)+","+(points[i]/count)+") ";
+    	}
+    	plotTex += "};\n\\end{axis} \n\\end{tikzpicture}";
+    	
+    	return plotTex;
+    }
+    
+    public void AddListToResults(List<Document> docs, int totalRecall) {
+    	List<Point> curvepoints = countPR(docs, totalRecall);
+    	for(Point p : curvepoints) {
+    		//eg. point x = 0.3 => index 3 in table
+    		int i = (int)(p.x*10);
+    		this.points[i] += p.y;
+    		i++;
+    	}
+    	this.count++;
+    	
     }
     
     private List<Point> countPR(List<Document> docs, int totalRecall) {
