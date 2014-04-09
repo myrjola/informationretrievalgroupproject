@@ -6,5 +6,6 @@ package ir_course;
  */
 public enum Stemmer {
     PORTER,
-    STANDARD
+    STANDARD,
+    SIMPLE
 }

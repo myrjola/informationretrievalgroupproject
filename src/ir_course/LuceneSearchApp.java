@@ -10,6 +10,7 @@ package ir_course;
 import com.google.common.base.Joiner;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -79,6 +80,8 @@ public class LuceneSearchApp {
             // if analyzer defined
             if (argList.contains("PORTER")) {
                 stemmer = Stemmer.PORTER;
+            } else if (argList.contains("SIMPLE")) {
+                stemmer = Stemmer.SIMPLE;
             }
 
             engine.index(docs, true);
@@ -145,9 +148,9 @@ public class LuceneSearchApp {
         try {
             Directory dir = FSDirectory.open(new File(INDEXFILE));
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
-            if (stemmer.equals(Stemmer.PORTER)) {
+            if (stemmer.equals(Stemmer.PORTER) || stemmer.equals(Stemmer.SIMPLE)) {
                 // Prevent wrong analyzation of stemmed words.
-                analyzer = new StopAnalyzer(Version.LUCENE_42);
+                analyzer = new SimpleAnalyzer(Version.LUCENE_42);
             }
             IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_42, analyzer);
             if (isTfIdf) {
