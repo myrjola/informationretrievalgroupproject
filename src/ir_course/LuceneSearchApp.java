@@ -8,10 +8,8 @@
 package ir_course;
 
 import com.google.common.base.Joiner;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
-import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -28,6 +26,7 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.DefaultSimilarity;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
@@ -41,11 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.lucene.search.similarities.BM25Similarity;
-import org.apache.lucene.search.similarities.Similarity;
-
-import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class LuceneSearchApp {
@@ -130,7 +124,6 @@ public class LuceneSearchApp {
 //            results = engine.search(null, inAbstract, similarity);
 ////            engine.printResults(results);
             
-            inAbstract = new ArrayList<>();
             inAbstract.add("automatic");
             inAbstract.add("face");
             inAbstract.add("recognition");
