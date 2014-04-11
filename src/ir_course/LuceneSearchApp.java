@@ -103,6 +103,8 @@ public class LuceneSearchApp {
 
             if (argList.contains("bm25")) {
                 similarity = new BM25Similarity();
+            } else if (argList.contains("more-like-vsm")) {
+                similarity = new MoreLikeVSMSimilarity();
             } else {
                 similarity = new DefaultSimilarity();
             }
@@ -247,6 +249,7 @@ public class LuceneSearchApp {
              */ 
 
             plotter.AddListToResults(plotlist, totalNumRelevantRecords);
+            plotter.PlotListToFile(plotlist, "Test", totalNumRelevantRecords);
 
         } catch (IOException e) {
             System.err.println("Error collecting results!");
