@@ -23,5 +23,14 @@ public class SearchSuite {
         app.main(bm25Simple);
         app.main(vsmSimple);
         app.main(vsmPorter);
+        
+        runCombination(app, "BM25", defaults, bm25Standard, bm25Porter, bm25Simple, vsmSimple, vsmPorter);
+    }
+    
+    public static void runCombination(LuceneSearchApp app, String label, String[]... tests) {
+    	for( String[] test : tests) {
+    		// TODO: print label here
+    		app.main(test);
+    	}
     }
 }
