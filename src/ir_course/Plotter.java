@@ -84,6 +84,17 @@ public class Plotter {
     	
     	return plotTex;
     }
+   
+    public String PlotResultsAsStringAddPlotOnly(String color, String mark) {
+    	String plotTex = "\n\\addplot[color="+color+",mark="+mark+",]"
+    			+"\n\tcoordinates {";
+    	for(int i=0 ; i<11 ; i++) {
+    		plotTex += "("+((float)i/10)+","+(points[i]/count)+") ";
+    	}
+    	plotTex += "};\n";
+    	
+    	return plotTex;
+    }   
     
     public void AddListToResults(List<Document> docs, int totalRecall) {
     	List<Point> curvepoints = countPR(docs, totalRecall);
