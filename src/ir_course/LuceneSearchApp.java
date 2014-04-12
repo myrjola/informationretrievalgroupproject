@@ -61,6 +61,9 @@ public class LuceneSearchApp {
     private static int totalNumRelevantRecords = 0;
     private static Similarity similarity;
 
+    private static String mark;
+    private static String plotColor;
+    
     public LuceneSearchApp() {
 
     }
@@ -77,11 +80,14 @@ public class LuceneSearchApp {
 
 
             stemmer = Stemmer.STANDARD;
+            plotColor = "blue";
             // if analyzer defined
             if (argList.contains("PORTER")) {
                 stemmer = Stemmer.PORTER;
+                plotColor = "red";
             } else if (argList.contains("SIMPLE")) {
                 stemmer = Stemmer.SIMPLE;
+                plotColor = "green";
             }
 
             engine.index(docs, true);
@@ -103,10 +109,13 @@ public class LuceneSearchApp {
 
             if (argList.contains("bm25")) {
                 similarity = new BM25Similarity();
+                mark = "*";
             } else if (argList.contains("more-like-vsm")) {
                 similarity = new MoreLikeVSMSimilarity();
+                mark ="triangle";
             } else {
                 similarity = new DefaultSimilarity();
+                mark = "square";
             }
 
             inAbstract = new ArrayList<>();
@@ -114,6 +123,13 @@ public class LuceneSearchApp {
             results = engine.search(null, inAbstract, similarity);
 //            engine.printResults(results);
 
+//            inAbstract = new ArrayList<>();
+//            inAbstract.add("recognizing");
+//            inAbstract.add("faces");
+//            inAbstract.add("automatically");
+//            results = engine.search(null, inAbstract, similarity);
+////            engine.printResults(results);
+            
             inAbstract = new ArrayList<>();
             inAbstract.add("automatic");
             inAbstract.add("face");
@@ -141,7 +157,8 @@ public class LuceneSearchApp {
             results = engine.search(null, inAbstract, similarity);
 //            engine.printResults(results);
 
-            System.out.println(plotter.PlotResultsAsString(String.format("combined results, stemmer: %s scorer: %s", stemmer.toString(), similarity.toString())));
+              System.out.println(plotter.PlotResultsAsStringAddPlotOnly(plotColor, mark));
+//            System.out.println(plotter.PlotResultsAsString(String.format("combined results, stemmer: %s scorer: %s", stemmer.toString(), similarity.toString())));
         } else 
             System.out.println("ERROR: the path of the corpus-file has to be passed as a command line argument.");
     }
@@ -200,7 +217,7 @@ public class LuceneSearchApp {
 
     public List<String> search(List<String> inTitle, List<String> inAbstract, Similarity similarity) {
 
-        printQuery(inTitle, null, inAbstract, null);
+//        printQuery(inTitle, null, inAbstract, null);
 
         IndexReader reader;
         try {
@@ -248,6 +265,7 @@ public class LuceneSearchApp {
              * don't include those relevant documents that the query missed.
              */ 
 
+//            System.out.println(plotter.PlotListAsString(plotlist, String.format("stemmer: %s scorer: %s", stemmer.toString(), similarity.toString()), 140));
             plotter.AddListToResults(plotlist, totalNumRelevantRecords);
             plotter.PlotListToFile(plotlist, "Test", totalNumRelevantRecords);
 

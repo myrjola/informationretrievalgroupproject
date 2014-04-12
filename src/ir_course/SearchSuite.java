@@ -1,5 +1,8 @@
 package ir_course;
 
+
+import java.util.List;
+
 /**
  * Created by martin on 4/9/14.
  */
@@ -17,20 +20,33 @@ public class SearchSuite {
     private static String[] bm25Simple = {corpusPath, BM25, SIMPLE};
     public static void main(String[] args) {
         LuceneSearchApp app = new LuceneSearchApp();
-        app.main(defaults);
-        app.main(bm25Standard);
-        app.main(bm25Porter);
-        app.main(bm25Simple);
-        app.main(vsmSimple);
-        app.main(vsmPorter);
         
         runCombination(app, "BM25", defaults, bm25Standard, bm25Porter, bm25Simple, vsmSimple, vsmPorter);
     }
     
     public static void runCombination(LuceneSearchApp app, String label, String[]... tests) {
+        String plotTex = "\\begin{tikzpicture} \n\\begin{axis}[\n\ttitle={";
+    	plotTex += label;
+    	plotTex += "},\n\txlabel={Recall}, \n\tylabel={Precision},\n\txmin=0, \n\txmax=1,\n\tymin=0, \n\tymax=1,"
+    			+ "\n\txtick={0,0.2,0.4,0.6,0.8,1.0},"
+    			+ "\n\tytick={0,0.2,0.4,0.6,0.8,1.0},"
+    			+ "\n\tlegend pos=outer north east,]";
+    	
+    	System.out.println(plotTex);
+
     	for( String[] test : tests) {
-    		// TODO: print label here
     		app.main(test);
     	}
+
+    	System.out.println("\n\\legend{");
+    	for(String[] s : tests) {
+    		for(String legend : s) {
+    			if(!legend.equals("corpus_part2.xml")) {
+    					System.out.println(s+",");
+    			}   		
+    		}
+    	}
+    		System.out.println( "}\n\\end{axis} \n\\end{tikzpicture}");        
+
     }
 }
