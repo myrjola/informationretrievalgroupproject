@@ -11,7 +11,7 @@ public class MoreLikeVSMSimilarity extends DefaultSimilarity {
 
     @Override
     public float lengthNorm(FieldInvertState state) {
-        return state.getLength();
+        return 1f;
     }
 
     @Override
