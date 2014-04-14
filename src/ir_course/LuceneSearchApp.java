@@ -98,7 +98,6 @@ public class LuceneSearchApp {
                 analyzer = new EnglishAnalyzer(Version.LUCENE_42);
             }
 
-            engine.index(docs, true);
 
             List<String> inTitle;
             List<String> inAbstract;
@@ -125,7 +124,9 @@ public class LuceneSearchApp {
                 similarity = new DefaultSimilarity();
                 mark = "square";
             }
-            
+
+
+            engine.index(docs, similarity);
             
 //            inAbstract = new ArrayList<>();
 //            inAbstract.add("recognising");
@@ -174,15 +175,13 @@ public class LuceneSearchApp {
             System.out.println("ERROR: the path of the corpus-file has to be passed as a command line argument.");
     }
 
-    public void index(List<DocumentInCollection> docs, boolean isTfIdf) {
+    public void index(List<DocumentInCollection> docs, Similarity similarity) {
         try {
             Directory dir = FSDirectory.open(new File(INDEXFILE));
             
             IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_42, analyzer);
-            if (isTfIdf) {
-                // DefaultSimilarity is subclass of TFIDFSimilarity
-            	iwc.setSimilarity(new DefaultSimilarity());
-            }
+            iwc.setSimilarity(similarity);
+            
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
             IndexWriter w = new IndexWriter(dir, iwc);
 
