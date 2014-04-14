@@ -160,7 +160,9 @@ public class LuceneSearchApp {
         try {
             Directory dir = FSDirectory.open(new File(INDEXFILE));
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
-            if (stemmer.equals(Stemmer.PORTER) || stemmer.equals(Stemmer.SIMPLE)) {
+            if (stemmer.equals(Stemmer.PORTER)) {
+                analyzer = new PorterAnalyzer();
+            } else if (stemmer.equals(Stemmer.SIMPLE)) {
                 // Prevent wrong analyzation of stemmed words.
                 analyzer = new SimpleAnalyzer(Version.LUCENE_42);
             }
@@ -181,10 +183,6 @@ public class LuceneSearchApp {
                 }
                 String title = documentInCollection.getTitle();
                 String abstractString = documentInCollection.getAbstractText();
-                if (stemmer.equals(Stemmer.PORTER)) {
-                    title = tokenizeAndPorterStemString(title);
-                    abstractString = tokenizeAndPorterStemString(abstractString);
-                }
                 doc.add(new Field(TITLE, documentInCollection.getTitle(), TextField.TYPE_STORED));
                 doc.add(new Field(ABSTRACT, abstractString, TextField.TYPE_STORED));
                 w.addDocument(doc);
@@ -272,9 +270,6 @@ public class LuceneSearchApp {
     private void addTermQueries(List<String> termList, BooleanQuery q, String field, BooleanClause.Occur occur) {
         if (termList == null) return;
         for (String termString : termList) {
-            if (stemmer.equals(Stemmer.PORTER)) {
-                termString = porterStem(termString);
-            }
             Term t = new Term(field, termString);
             TermQuery tq = new TermQuery(t);
             q.add(tq, occur);
