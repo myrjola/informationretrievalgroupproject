@@ -8,10 +8,9 @@
 package ir_course;
 
 import com.google.common.base.Joiner;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
-import org.apache.lucene.analysis.core.StopAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -28,6 +27,7 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.DefaultSimilarity;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
@@ -41,11 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.lucene.search.similarities.BM25Similarity;
-import org.apache.lucene.search.similarities.Similarity;
-
-import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class LuceneSearchApp {
@@ -88,6 +83,9 @@ public class LuceneSearchApp {
             } else if (argList.contains("SIMPLE")) {
                 stemmer = Stemmer.SIMPLE;
                 plotColor = "green";
+            } else if (argList.contains("ENGLISH")) {
+                stemmer = Stemmer.ENGLISH;
+                plotColor = "pink";
             }
 
             engine.index(docs, true);
@@ -130,7 +128,6 @@ public class LuceneSearchApp {
 //            results = engine.search(null, inAbstract, similarity);
 ////            engine.printResults(results);
             
-            inAbstract = new ArrayList<>();
             inAbstract.add("automatic");
             inAbstract.add("face");
             inAbstract.add("recognition");
@@ -167,9 +164,13 @@ public class LuceneSearchApp {
         try {
             Directory dir = FSDirectory.open(new File(INDEXFILE));
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_42);
-            if (stemmer.equals(Stemmer.PORTER) || stemmer.equals(Stemmer.SIMPLE)) {
-                // Prevent wrong analyzation of stemmed words.
+            if (stemmer.equals(Stemmer.PORTER)) {
+                analyzer = new PorterAnalyzer();
+            } else if (stemmer.equals(Stemmer.SIMPLE)) {
                 analyzer = new SimpleAnalyzer(Version.LUCENE_42);
+            } else if (stemmer.equals(Stemmer.ENGLISH)) {
+                // Prevent wrong analyzation of stemmed words.
+                analyzer = new EnglishAnalyzer(Version.LUCENE_42);
             }
             IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_42, analyzer);
             if (isTfIdf) {
@@ -188,10 +189,6 @@ public class LuceneSearchApp {
                 }
                 String title = documentInCollection.getTitle();
                 String abstractString = documentInCollection.getAbstractText();
-                if (stemmer.equals(Stemmer.PORTER)) {
-                    title = tokenizeAndPorterStemString(title);
-                    abstractString = tokenizeAndPorterStemString(abstractString);
-                }
                 doc.add(new Field(TITLE, documentInCollection.getTitle(), TextField.TYPE_STORED));
                 doc.add(new Field(ABSTRACT, abstractString, TextField.TYPE_STORED));
                 w.addDocument(doc);
@@ -279,9 +276,6 @@ public class LuceneSearchApp {
     private void addTermQueries(List<String> termList, BooleanQuery q, String field, BooleanClause.Occur occur) {
         if (termList == null) return;
         for (String termString : termList) {
-            if (stemmer.equals(Stemmer.PORTER)) {
-                termString = porterStem(termString);
-            }
             Term t = new Term(field, termString);
             TermQuery tq = new TermQuery(t);
             q.add(tq, occur);
