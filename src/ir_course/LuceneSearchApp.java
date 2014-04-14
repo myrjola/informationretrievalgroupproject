@@ -10,6 +10,7 @@ package ir_course;
 import com.google.common.base.Joiner;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -82,6 +83,9 @@ public class LuceneSearchApp {
             } else if (argList.contains("SIMPLE")) {
                 stemmer = Stemmer.SIMPLE;
                 plotColor = "green";
+            } else if (argList.contains("ENGLISH")) {
+                stemmer = Stemmer.ENGLISH;
+                plotColor = "pink";
             }
 
             engine.index(docs, true);
@@ -163,8 +167,10 @@ public class LuceneSearchApp {
             if (stemmer.equals(Stemmer.PORTER)) {
                 analyzer = new PorterAnalyzer();
             } else if (stemmer.equals(Stemmer.SIMPLE)) {
-                // Prevent wrong analyzation of stemmed words.
                 analyzer = new SimpleAnalyzer(Version.LUCENE_42);
+            } else if (stemmer.equals(Stemmer.ENGLISH)) {
+                // Prevent wrong analyzation of stemmed words.
+                analyzer = new EnglishAnalyzer(Version.LUCENE_42);
             }
             IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_42, analyzer);
             if (isTfIdf) {
