@@ -21,8 +21,8 @@ public class SearchSuite {
     public static void main(String[] args) {
         LuceneSearchApp app = new LuceneSearchApp();
         
-        runCombination(app, "BM25 vs VSM (both using StandardAnalyzer)", "VSM, BM25", defaults, bm25Standard);
-        runCombination(app, "StandardAnalyzer vs SimpleAnalyzer vs Porter stemming", "StandardAnalyzer,SimpleAnalyzer,Porter stemming",defaults, vsmSimple, vsmPorter);
+//        runCombination(app, "BM25 vs VSM (both using StandardAnalyzer)", "VSM, BM25", defaults, bm25Standard);
+        runCombination(app, "StandardAnalyzer vs SimpleAnalyzer vs PorterAnalyzer", "StandardAnalyzer,SimpleAnalyzer,Porter stemming",defaults, vsmSimple, vsmPorter);
 //        runCombination(app, "BM25 vs VSM", defaults, bm25Standard, bm25Porter, bm25Simple, vsmSimple, vsmPorter);
     }
     
@@ -41,7 +41,7 @@ public class SearchSuite {
     	}
 
     	System.out.print("\n\\legend{"+legend);
-    	System.out.print( "}\n\\end{axis} \n\\end{tikzpicture}\n");        
+    	System.out.print( "}\n\\end{axis} \n\\end{tikzpicture}\n\n");        
 
     }
 }
