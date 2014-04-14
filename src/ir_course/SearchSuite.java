@@ -18,11 +18,17 @@ public class SearchSuite {
     public static final String SIMPLE = "SIMPLE";
     private static String[] vsmSimple = {corpusPath, SIMPLE};
     private static String[] bm25Simple = {corpusPath, BM25, SIMPLE};
+
+    public static final String MORELIKEVSM = "more-like-vsm";
+    private static final String[] moreLikeVsmSimple = { corpusPath, MORELIKEVSM, SIMPLE };
+    private static final String[] moreLikeVsmPorter = { corpusPath, MORELIKEVSM, PORTER };
+    
     public static void main(String[] args) {
         LuceneSearchApp app = new LuceneSearchApp();
         
         runCombination(app, "BM25 vs VSM (both using StandardAnalyzer)", "VSM, BM25", defaults, bm25Standard);
         runCombination(app, "StandardAnalyzer vs SimpleAnalyzer vs Porter stemming", "StandardAnalyzer,SimpleAnalyzer,Porter stemming",defaults, vsmSimple, vsmPorter);
+        runCombination(app, "Default vs MoreLikeVSM", "Default,MoreLikeVSM", defaults, moreLikeVsmSimple);
 //        runCombination(app, "BM25 vs VSM", defaults, bm25Standard, bm25Porter, bm25Simple, vsmSimple, vsmPorter);
     }
     
@@ -42,6 +48,5 @@ public class SearchSuite {
 
     	System.out.print("\n\\legend{"+legend);
     	System.out.print( "}\n\\end{axis} \n\\end{tikzpicture}\n");        
-
     }
 }
