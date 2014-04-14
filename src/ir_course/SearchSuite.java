@@ -21,10 +21,12 @@ public class SearchSuite {
     public static void main(String[] args) {
         LuceneSearchApp app = new LuceneSearchApp();
         
-        runCombination(app, "BM25", defaults, bm25Standard, bm25Porter, bm25Simple, vsmSimple, vsmPorter);
+        runCombination(app, "BM25 vs VSM (both using StandardAnalyzer)", "VSM, BM25", defaults, bm25Standard);
+        runCombination(app, "StandardAnalyzer vs SimpleAnalyzer vs Porter stemming", "StandardAnalyzer,SimpleAnalyzer,Porter stemming",defaults, vsmSimple, vsmPorter);
+//        runCombination(app, "BM25 vs VSM", defaults, bm25Standard, bm25Porter, bm25Simple, vsmSimple, vsmPorter);
     }
     
-    public static void runCombination(LuceneSearchApp app, String label, String[]... tests) {
+    public static void runCombination(LuceneSearchApp app, String label, String legend, String[]... tests) {
         String plotTex = "\\begin{tikzpicture} \n\\begin{axis}[\n\ttitle={";
     	plotTex += label;
     	plotTex += "},\n\txlabel={Recall}, \n\tylabel={Precision},\n\txmin=0, \n\txmax=1,\n\tymin=0, \n\tymax=1,"
@@ -32,21 +34,14 @@ public class SearchSuite {
     			+ "\n\tytick={0,0.2,0.4,0.6,0.8,1.0},"
     			+ "\n\tlegend pos=outer north east,]";
     	
-    	System.out.println(plotTex);
+    	System.out.print(plotTex);
 
     	for( String[] test : tests) {
     		app.main(test);
     	}
 
-    	System.out.println("\n\\legend{");
-    	for(String[] s : tests) {
-    		for(String legend : s) {
-    			if(!legend.equals("corpus_part2.xml")) {
-    					System.out.println(s+",");
-    			}   		
-    		}
-    	}
-    		System.out.println( "}\n\\end{axis} \n\\end{tikzpicture}");        
+    	System.out.print("\n\\legend{"+legend);
+    	System.out.print( "}\n\\end{axis} \n\\end{tikzpicture}\n");        
 
     }
 }
