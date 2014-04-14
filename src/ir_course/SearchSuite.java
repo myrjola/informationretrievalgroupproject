@@ -28,14 +28,14 @@ public class SearchSuite {
         LuceneSearchApp app = new LuceneSearchApp();
         
 
-        runCombination(app, "BM25 vs MoreLikeVSM (both using StandardAnalyzer)", "moreLikeVSM, BM25", moreLikeVsmStandard, bm25Standard);
-//        runCombination(app, "StandardAnalyzer vs SimpleAnalyzer vs PorterAnalyzer", "StandardAnalyzer,SimpleAnalyzer,Porter stemming",defaults, vsmSimple, vsmPorter);
+//        runCombination(app, "BM25 vs MoreLikeVSM (both using StandardAnalyzer)", "moreLikeVSM, BM25", moreLikeVsmStandard, bm25Standard);
+        runCombination(app, "StandardAnalyzer vs SimpleAnalyzer vs PorterAnalyzer", "StandardAnalyzer,SimpleAnalyzer,Porter stemming",defaults, vsmSimple, vsmPorter);
 //        runCombination(app, "Default vs MoreLikeVSM", "Default,MoreLikeVSM", defaults, moreLikeVsmSimple);
 //        runCombination(app, "BM25 vs VSM", defaults, bm25Standard, bm25Porter, bm25Simple, vsmSimple, vsmPorter);
     }
     
     public static void runCombination(LuceneSearchApp app, String label, String legend, String[]... tests) {
-        String plotTex = "\\begin{tikzpicture} \n\\begin{axis}[\n\talign=left\n\ttitle={";
+        String plotTex = "\\begin{tikzpicture} \n\\begin{axis}[\n\talign=left,\n\ttitle={";
     	plotTex += label;
     	plotTex += "},\n\txlabel={Recall}, \n\tylabel={Precision},\n\txmin=0, \n\txmax=1,\n\tymin=0, \n\tymax=1,"
     			+ "\n\txtick={0,0.2,0.4,0.6,0.8,1.0},"
